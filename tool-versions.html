@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Tool Versions</title>
+	<style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+        h3 {
+            font-size: 1.5em;
+            line-height: 1.43;
+        }
+        table {
+            display: block;
+            width: 100%;
+            overflow: auto;
+            word-break: normal;
+            border-collapse: collapse;
+            border-spacing: 0;
+            border-color: gray;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        thead {
+            display: table-header-group;
+            vertical-align: middle;
+            border-color: inherit;
+        }
+        table tr {
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+        }
+        table tr:nth-child(2n) {
+            background-color: #f8f8f8;
+        }
+        table th, table td {
+            padding: 6px 13px;
+            border: 1px solid #ddd;
+        }
+        table th {
+            font-weight: bold;
+            text-align: left;
+        }
+	</style>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+</head>
+<body>
+    <h3>Apps</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>App</th>
+                <th>Version</th>
+            </tr>
+        </thead>
+        <tbody class="apps">
+        </tbody>
+    </table>
+    <h3>SDKs</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>SDK</th>
+                <th>Version</th>
+            </tr>
+        </thead>
+        <tbody class="sdks">
+        </tbody>
+    </table>
+    
+    <script>
+        function createToolRow(tool) {
+            return($("<tr><td align=\"left\">" + tool.name + "</td><td align=\"left\">" + tool.version + "</td></tr>"));
+        }
+        
+        var url = "https://s3.amazonaws.com/turbo.turbostudios.com/data/tool-versions.json"
+        
+        $.getJSON(url, function(data) {
+            var apps = [];
+            var sdks = [];
+            
+            $.each(data, function(index, value) {
+                if (value.type == "app") {
+                    apps.push(createToolRow(value));
+                }
+                else if (value.type == "sdk") {
+                    sdks.push(createToolRow(value));
+                }
+            });
+            
+            $("tbody.apps").append(apps);
+            $("tbody.sdks").append(sdks);
+        });
+    </script>
+</body>
+</html>
