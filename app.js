@@ -10,11 +10,13 @@ var jsonParser = bodyParser.json();
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 var url = "https://s3.amazonaws.com/turbo.turbostudios.com/data/tool-versions.json";
-var toolVersions = [];
+var toolVersions = {};
 
 request({url: url, json: true}, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-        toolVersions = body;
+        for (var i=0; i<body.length; i++) {
+            toolVersions[body[i].id] = body[i];
+        }
     }
 });
 
@@ -23,7 +25,7 @@ app.post('/', urlencodedParser, function (req, res) {
     if (req.body.command === '/senso') {
         var text = req.body.text.toLowerCase();
         if (toolVersions[text] !== null) {
-            res.send(toolVersions[text]);
+            res.send(toolVersions[text].version);
         } else {
             res.send('Unrecognized text');
         }
